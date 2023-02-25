@@ -19,11 +19,11 @@ class Resman(AbstractPlugin):
                                          lossperminute=800, _infoside='right'),
                                   c=dict(level=1000, max=2000, target=None, depletable=True,
                                          lossperminute=0, _infoside='left'),
-                                  d=dict(level=1000, max=2000, target=None, depletable=False,
+                                  d=dict(level=3000, max=4000, target=None, depletable=False,
                                          lossperminute=0, _infoside='left'),
                                   e=dict(level=3000, max=4000, target=None, depletable=False,
                                          lossperminute=0, _infoside='right'),
-                                  f=dict(level=3000, max=4000, target=None, depletable=True,
+                                  f=dict(level=1000, max=2000, target=None, depletable=True,
                                          lossperminute=0, _infoside='right')),
 
                         pump=dict([

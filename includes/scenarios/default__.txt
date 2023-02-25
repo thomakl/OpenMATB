@@ -33,6 +33,12 @@
 0:00:00;resman;pump-3-flow;400
 0:00:00;resman;pump-5-flow;400
 0:00:00;resman;pump-6-flow;400
+0:00:00;resman;tank-a-level;2500
+0:00:00;resman;tank-b-level;2500
+0:00:00;resman;tank-c-level;1000
+0:00:00;resman;tank-d-level;3000
+0:00:00;resman;tank-e-level;3000
+0:00:00;resman;tank-f-level;1000
 0:00:00;scheduling;minduration;15
 0:00:00;track;targetproportion;1.0
 0:00:00;scheduling;displayedplugins;sysmon,resman,communications
