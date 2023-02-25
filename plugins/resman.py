@@ -19,11 +19,11 @@ class Resman(AbstractPlugin):
                                          lossperminute=800, _infoside='right'),
                                   c=dict(level=1000, max=2000, target=None, depletable=True,
                                          lossperminute=0, _infoside='left'),
-                                  d=dict(level=1000, max=2000, target=None, depletable=True,
+                                  d=dict(level=1000, max=2000, target=None, depletable=False,
                                          lossperminute=0, _infoside='left'),
                                   e=dict(level=3000, max=4000, target=None, depletable=False,
                                          lossperminute=0, _infoside='right'),
-                                  f=dict(level=3000, max=4000, target=None, depletable=False,
+                                  f=dict(level=3000, max=4000, target=None, depletable=True,
                                          lossperminute=0, _infoside='right')),
 
                         pump=dict([
@@ -32,7 +32,7 @@ class Resman(AbstractPlugin):
                            ('3', dict(flow=800, state='off', key='NUM_3', _fromtank='d', _totank='b')),
                            ('4', dict(flow=600, state='off', key='NUM_4', _fromtank='f', _totank='b')),
                            ('5', dict(flow=600, state='off', key='NUM_5', _fromtank='e', _totank='c')),
-                           ('6', dict(flow=600, state='off', key='NUM_6', _fromtank='f', _totank='d')),
+                           ('6', dict(flow=600, state='off', key='NUM_6', _fromtank='d', _totank='f')),
                            ('7', dict(flow=400, state='off', key='NUM_7', _fromtank='a', _totank='b')),
                            ('8', dict(flow=400, state='off', key='NUM_8', _fromtank='b', _totank='a'))
                            ]
@@ -85,12 +85,12 @@ class Resman(AbstractPlugin):
         l_coord_dict = {k:self.task_container.l + self.task_container.w * v for k, v in l_prop_dict.items()}
 
         tank_container_dict = dict(
-                          a=Container(name='tank_a', l=l_coord_dict['a'], b=upper_y, w=large,  h=h),
-                          b=Container(name='tank_b', l=l_coord_dict['b'], b=upper_y, w=large,  h=h),
-                          c=Container(name='tank_c', l=l_coord_dict['c'], b=lower_y, w=small,  h=h),
-                          d=Container(name='tank_d', l=l_coord_dict['d'], b=lower_y, w=small,  h=h),
-                          e=Container(name='tank_e', l=l_coord_dict['e'], b=lower_y, w=medium, h=h),
-                          f=Container(name='tank_f', l=l_coord_dict['f'], b=lower_y, w=medium, h=h)
+                          a=Container(name='Sup-G', l=l_coord_dict['a'], b=upper_y, w=large,  h=h),
+                          b=Container(name='Sup-D', l=l_coord_dict['b'], b=upper_y, w=large,  h=h),
+                          c=Container(name='Ext-G', l=l_coord_dict['c'], b=lower_y, w=small,  h=h),
+                          d=Container(name='Int-D', l=l_coord_dict['d'], b=lower_y, w=small,  h=h),
+                          e=Container(name='Int-G', l=l_coord_dict['e'], b=lower_y, w=medium, h=h),
+                          f=Container(name='Ext-D', l=l_coord_dict['f'], b=lower_y, w=medium, h=h)
                         )
 
         # The pump status are managed from Resman
@@ -126,7 +126,7 @@ class Resman(AbstractPlugin):
             fluid_label = str(this_tank['level']) if this_tank['depletable'] else str()
             this_tank['widget'] = self.add_widget(f'tank_{tank_letter}', Tank,
                                                  container=tank_container_dict[tank_letter],
-                                                 letter=tank_letter.upper(),
+                                                 letter=tank_container_dict[tank_letter].name,
                                                  level=this_tank['level'],
                                                  fluid_label = fluid_label,
                                                  level_max=this_tank['max'],
