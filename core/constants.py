@@ -9,7 +9,8 @@ C = COLORS = dict(WHITE=(255, 255, 255, 255),
                   BACKGROUND=(240, 240, 240, 255),
                   LIGHTGREY=(220, 220, 220, 255),
                   GREY=(200, 200, 200, 255),
-                  BLUE=(153, 204, 255, 255))
+                  BLUE=(153, 204, 255, 255),
+                  DARKBLUE=(0, 0, 255, 255))
 
 F = FONT_SIZES = dict(SMALL=12,
                       MEDIUM=15,

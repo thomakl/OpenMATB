@@ -329,7 +329,7 @@ class AbstractPlugin:
                 autocont = self.container.reduce_and_translate(width=0.15, height=0.05, x=position[0],
                                                                                        y=position[1])
                 self.add_widget('automode', Simpletext, container=autocont,
-                               text=self.automode_string, x=0.5, y=0.5)
+                               text=self.automode_string,color=C['DARKBLUE'], x=0.5, y=0.5)
 
 
 
