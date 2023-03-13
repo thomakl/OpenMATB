@@ -36,9 +36,9 @@ class Tank(AbstractWidget):
                                            x=x, y=y2 - 15, anchor_x='center',
                                            anchor_y='center', color=C['BLACK'], group=G(1))
 
-        l_x = x1 - 15 if infoside == 'left' else x2 + 15
-        self.vertex['tank_label'] = Label(letter, font_size=F['SMALL'], font_name=self.font_name,
-                                          x=l_x, y=y1 - 10, anchor_x='center',
+        l_x = x1 + 35 if infoside == 'left' else x2 - 35
+        self.vertex['tank_label'] = Label(letter, font_size=F['MEDIUM'], font_name=self.font_name,
+                                          x=l_x, y=y1 - 15, anchor_x='center',
                                           anchor_y='center', color=C['BLACK'], group=G(1))
 
 
