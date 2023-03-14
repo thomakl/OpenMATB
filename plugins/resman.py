@@ -33,8 +33,8 @@ class Resman(AbstractPlugin):
                         pump=dict([
                            ('1', dict(flow=800, state='off', key='NUM_1', _fromtank='c', _totank='a')),
                            ('2', dict(flow=600, state='off', key='NUM_2', _fromtank='e', _totank='a')),
-                           ('3', dict(flow=600, state='off', key='NUM_3', _fromtank='d', _totank='b')),
-                           ('4', dict(flow=800, state='off', key='NUM_4', _fromtank='f', _totank='b')),
+                           ('3', dict(flow=800, state='off', key='NUM_3', _fromtank='d', _totank='b')),
+                           ('4', dict(flow=600, state='off', key='NUM_4', _fromtank='f', _totank='b')),
                            ('5', dict(flow=600, state='off', key='NUM_5', _fromtank='e', _totank='c')),
                            ('6', dict(flow=600, state='off', key='NUM_6', _fromtank='d', _totank='f')),
                            ('7', dict(flow=400, state='off', key='NUM_7', _fromtank='a', _totank='b')),
@@ -87,9 +87,9 @@ class Resman(AbstractPlugin):
                           a=Container(name='Sup-G', l=l_coord_dict['a'], b=upper_y, w=large,  h=h),
                           b=Container(name='Sup-D', l=l_coord_dict['b'], b=upper_y, w=large,  h=h),
                           c=Container(name='Ext-G', l=l_coord_dict['c'], b=lower_y, w=small,  h=h),
-                          d=Container(name='Int-D', l=l_coord_dict['d'], b=lower_y, w=medium,  h=h),
+                          d=Container(name='Int-D', l=l_coord_dict['d'], b=lower_y, w=small,  h=h),
                           e=Container(name='Int-G', l=l_coord_dict['e'], b=lower_y, w=medium, h=h),
-                          f=Container(name='Ext-D', l=l_coord_dict['f'], b=lower_y, w=small, h=h)
+                          f=Container(name='Ext-D', l=l_coord_dict['f'], b=lower_y, w=medium, h=h)
                         )
 
         # The pump status are managed from Resman
