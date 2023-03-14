@@ -1,3 +1,7 @@
+# Copyright 2023, by Julien Cegarra & Benoît Valéry. All rights reserved.
+# Institut National Universitaire Champollion (Albi, France).
+# License : CeCILL, version 2.1 (see the LICENSE file)
+
 import re
 from pyglet.window import key as winkey
 from core.constants import COLORS as C, PATHS as P
@@ -507,6 +511,8 @@ validation_dict = {
 
     # Scheduling #
     'minduration': is_positive_integer,
+    'displaychronometer': is_boolean,
+    'reversechronometer': is_boolean,
     'displayedplugins': (is_in_list, ['sysmon', 'track', 'resman', 'communications']),
 
 
