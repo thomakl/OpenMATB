@@ -1,18 +1,17 @@
-import pdb
 from pathlib import Path
 from pyglet.window import key as winkey
-from core.widgets import Simpletext, Frame
+from core.widgets import Simpletext, SimpleHTML, Frame
 from core.constants import *
 from core import Container, logger
 
 
 class AbstractPlugin:
     """Any plugin (or task) depends on this meta-class"""
-    def __init__(self, taskplacement='fullscreen', taskupdatetime=-1):
+    def __init__(self, window, taskplacement='fullscreen', taskupdatetime=-1):
 
         self.alias = self.__class__.__name__.lower()  #   A lower version of the plugin class name
         self.widgets = dict()                         #   To store the widget objects of a plugin
-        self.win = None                               #   The window to which the plugin is attached
+        self.win = window                             #   The window to which the plugin is attached
         self.container = None                         #   The visual area of the plugin (object)
         self.logger = logger
 
@@ -43,14 +42,14 @@ class AbstractPlugin:
         # Define minimal draw order depending on task placement
         self.m_draw = BFLIM if self.parameters['taskplacement'] == 'fullscreen' else 0
 
-
-    def initialize(self, window):
-        self.win = window
-
         if not self.win.is_in_replay_mode():
             self.win.push_handlers(self.on_key_press, self.on_key_release)
-            if hasattr(self, 'joystick') and getattr(self, 'joystick') is not None:
-                self.joystick.push_handlers(self.win)
+
+
+    # def initialize(self, window):
+        # self.win = window
+
+        
 
 
     def update(self, scenariotime):
@@ -104,8 +103,8 @@ class AbstractPlugin:
             if self.get_widget('foreground') is not None:
                 self.get_widget('foreground').show()
 
-        if self.win._mouse_visible == True:
-            self.win.set_mouse_visible(self.win.replay_mode)
+        # if self.win._mouse_visible == True:
+        #     self.win.set_mouse_visible(self.win.replay_mode)
 
 
     def pause(self):
@@ -374,8 +373,8 @@ class AbstractPlugin:
 
 
 class BlockingPlugin(AbstractPlugin):
-    def __init__(self, taskplacement='fullscreen', taskupdatetime=15):
-        super().__init__(taskplacement, taskupdatetime)
+    def __init__(self, window, taskplacement='fullscreen', taskupdatetime=15):
+        super().__init__(window, taskplacement, taskupdatetime)
 
         new_par = dict(boldtitle=False)
         self.parameters.update(new_par)
@@ -446,14 +445,13 @@ class BlockingPlugin(AbstractPlugin):
     def make_slide_graphs(self):
         # Extract the title from the slide string if relevant
         slide_content = self.current_slide.split('\n')
-        title_idx = [i for i,t in enumerate(slide_content) if '<title>' in t]
+        title_idx = [i for i,t in enumerate(slide_content) if '<h1>' in t]
         if len(title_idx) > 0:
              # In case multiple title tags, take the last one
-            title = slide_content[title_idx[-1]].replace('<title>','')
+            title = slide_content[title_idx[-1]]
 
-            self.add_widget(f'title', Simpletext, container=self.container,
-                            text=title, font_size=F['XLARGE'], wrap_width=1, y=0.9,
-                            bold=self.parameters['boldtitle'], draw_order=self.m_draw+1)
+            self.add_widget(f'title', SimpleHTML, container=self.container,
+                            text=title, wrap_width=1, y=0.9, draw_order=self.m_draw+1)
             del slide_content[title_idx[-1]]
 
         # Remove a potential previous title
@@ -465,10 +463,9 @@ class BlockingPlugin(AbstractPlugin):
 
         if self.parameters['allowkeypress'] == True:
             key_name = self.parameters['response']['key'].lower()
-            response_text = self.parameters['response']['text']
-            self.add_widget(f'press_{key_name}', Simpletext, container=self.container,
-                            draw_order=self.m_draw+1, text=response_text, font_size=F['LARGE'],
-                            wrap_width=1, y=0.1)
+            response_text = '<center><p>'+self.parameters['response']['text']+'</p></center>'
+            self.add_widget(f'press_{key_name}', SimpleHTML, container=self.container,
+                            draw_order=self.m_draw+1, text=response_text, wrap_width=0.5, x=0.5, y=0.1)
 
 
     def on_key_press(self, symbol, modifiers):
