@@ -23,11 +23,11 @@ class Resman(AbstractPlugin):
                                          lossperminute=800, _infoside='right'),
                                   c=dict(level=1000, max=2000, target=None, depletable=True,
                                          lossperminute=0, _infoside='left'),
-                                  d=dict(level=1000, max=2000, target=None, depletable=True,
+                                  d=dict(level=3000, max=4000, target=None, depletable=False,
                                          lossperminute=0, _infoside='left'),
                                   e=dict(level=3000, max=4000, target=None, depletable=False,
                                          lossperminute=0, _infoside='right'),
-                                  f=dict(level=3000, max=4000, target=None, depletable=False,
+                                  f=dict(level=1000, max=2000, target=None, depletable=True,
                                          lossperminute=0, _infoside='right')),
 
                         pump=dict([
@@ -36,13 +36,12 @@ class Resman(AbstractPlugin):
                            ('3', dict(flow=800, state='off', key='NUM_3', _fromtank='d', _totank='b')),
                            ('4', dict(flow=600, state='off', key='NUM_4', _fromtank='f', _totank='b')),
                            ('5', dict(flow=600, state='off', key='NUM_5', _fromtank='e', _totank='c')),
-                           ('6', dict(flow=600, state='off', key='NUM_6', _fromtank='f', _totank='d')),
+                           ('6', dict(flow=600, state='off', key='NUM_6', _fromtank='d', _totank='f')),
                            ('7', dict(flow=400, state='off', key='NUM_7', _fromtank='a', _totank='b')),
                            ('8', dict(flow=400, state='off', key='NUM_8', _fromtank='b', _totank='a'))
                            ]
                         )
                    )
-
 
         self.parameters.update(new_par)
         self.automode_position = (0.48, 0.55)
@@ -56,13 +55,11 @@ class Resman(AbstractPlugin):
                 tank['_is_in_tolerance'] = None
                 tank['_tolerance_color'] = self.parameters['tolerancecolor']
 
-
     def show(self):
         super().show()
         if self.parameters['displaystatus']:
             if self.get_widget('status_foreground') is not None:
                 self.get_widget('status_foreground').set_visibility(False)
-
 
     def hide(self):
         super().hide()
@@ -70,10 +67,8 @@ class Resman(AbstractPlugin):
             if self.get_widget('status_foreground') is not None:
                 self.get_widget('status_foreground').set_visibility(True)
 
-
     def get_response_timers(self):
         return [t['_response_time'] for l, t in self.parameters['tank'].items() if t['target'] is not None]
-
 
     def create_widgets(self):
         super().create_widgets()
@@ -89,12 +84,12 @@ class Resman(AbstractPlugin):
         l_coord_dict = {k:self.task_container.l + self.task_container.w * v for k, v in l_prop_dict.items()}
 
         tank_container_dict = dict(
-                          a=Container(name='tank_a', l=l_coord_dict['a'], b=upper_y, w=large,  h=h),
-                          b=Container(name='tank_b', l=l_coord_dict['b'], b=upper_y, w=large,  h=h),
-                          c=Container(name='tank_c', l=l_coord_dict['c'], b=lower_y, w=small,  h=h),
-                          d=Container(name='tank_d', l=l_coord_dict['d'], b=lower_y, w=small,  h=h),
-                          e=Container(name='tank_e', l=l_coord_dict['e'], b=lower_y, w=medium, h=h),
-                          f=Container(name='tank_f', l=l_coord_dict['f'], b=lower_y, w=medium, h=h)
+                          a=Container(name='Sup-G', l=l_coord_dict['a'], b=upper_y, w=large,  h=h),
+                          b=Container(name='Sup-D', l=l_coord_dict['b'], b=upper_y, w=large,  h=h),
+                          c=Container(name='Ext-G', l=l_coord_dict['c'], b=lower_y, w=small,  h=h),
+                          d=Container(name='Int-D', l=l_coord_dict['d'], b=lower_y, w=small,  h=h),
+                          e=Container(name='Int-G', l=l_coord_dict['e'], b=lower_y, w=medium, h=h),
+                          f=Container(name='Ext-D', l=l_coord_dict['f'], b=lower_y, w=medium, h=h)
                         )
 
         # The pump status are managed from Resman
@@ -130,14 +125,13 @@ class Resman(AbstractPlugin):
             fluid_label = str(this_tank['level']) if this_tank['depletable'] else str()
             this_tank['widget'] = self.add_widget(f'tank_{tank_letter}', Tank,
                                                  container=tank_container_dict[tank_letter],
-                                                 letter=tank_letter.upper(),
+                                                 letter=tank_container_dict[tank_letter].name,
                                                  level=this_tank['level'],
-                                                 fluid_label = fluid_label,
+                                                 fluid_label=fluid_label,
                                                  level_max=this_tank['max'],
                                                  target=this_tank['target'],
                                                  toleranceradius=self.parameters['toleranceradius'],
                                                  infoside=this_tank['_infoside'])
-
 
         for pump_number, this_pump in self.parameters['pump'].items():
             from_cont = tanks[this_pump['_fromtank']]['widget'].container
@@ -152,7 +146,6 @@ class Resman(AbstractPlugin):
                                                  color=self.parameters['pumpcoloroff'],
                                                  pump_width=pump_width,
                                                  y_offset=y_offset)
-
 
     def compute_next_plugin_state(self):
         if super().compute_next_plugin_state() == 0:
@@ -193,19 +186,19 @@ class Resman(AbstractPlugin):
 
             for _, this_tank in tanks.items():           # 1. Deplete target tanks
                 if this_tank['target'] is not None:
-                    this_tank['level'] -= min(int(this_tank['lossperminute'] *  time_resolution), this_tank['level'])
+                    this_tank['level'] -= min(int(this_tank['lossperminute'] * time_resolution), this_tank['level'])
 
             for pump_n, this_pump in pumps.items():      # 2. For each pump
                 if this_pump['state'] == 'on':           # 2.a Transfer flow if pump is ON
                     fromtank, totank = tanks[this_pump['_fromtank']], tanks[this_pump['_totank']]
 
-                                                    # Compute (available) volume
+                    # Compute (available) volume
                     volume = min(int(this_pump['flow']) * time_resolution, fromtank['level'])
 
                     if fromtank['depletable']:      # Drain it from tank (if its capacity is limited)...
                         fromtank['level'] -= int(volume)
 
-                                                    # ...to tank (if it's not full)
+                    # ...to tank (if it's not full)
                     totank['level'] += min(int(volume), totank['max'] - totank['level'])
 
         # The following is always executed (independent on wait_before_leak)
@@ -222,7 +215,6 @@ class Resman(AbstractPlugin):
             for this_pump in pumps_to_deactivate:    # Deactivate selected pumps if not on failure
                 if not this_pump['state'] == 'failure':
                     this_pump['state'] = 'off'
-
 
             if this_tank['target'] is not None:      # Record performance for target tanks
                 t, r = this_tank['target'], self.parameters['toleranceradius']
@@ -241,7 +233,6 @@ class Resman(AbstractPlugin):
                 deviation = this_tank['level'] - this_tank['target']
                 self.log_performance(f'{tank_l}_in_tolerance', this_tank['_is_in_tolerance'])
                 self.log_performance(f'{tank_l}_deviation', deviation)
-
 
     def refresh_widgets(self):
         if super().refresh_widgets() == 0:
@@ -271,12 +262,10 @@ class Resman(AbstractPlugin):
             # b.    Is there a need to change the tolerance color ?
                 this_tank['widget'].set_tolerance_color(this_tank['_tolerance_color'])
 
-
     def get_pump_by_key(self, key):
         pump = [p for _, p in self.parameters['pump'].items() if p['key'] == key]
         if len(pump) > 0:
             return pump[0]
-
 
     def do_on_key(self, key, state):
         super().do_on_key(key, state)

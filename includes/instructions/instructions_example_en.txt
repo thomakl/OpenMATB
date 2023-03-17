@@ -11,22 +11,7 @@
 # Note that three tags are normalized in OpenMATB : <h1>, <h2> and <p>, which means that
 # using these tags will automatically render text into some predefined sizes, weight and so on.
 
-<h1>Instructions example</h1>
-
+# <h1>Instructions example</h1>
 <center>
-<p>Here, you can write <strong>any instruction</strong> you want to display to the subjects</p>
-<p>You can present instructions on multiple screens using the <em>newpage</em> command.</p>
-</center>
-
-<newpage>
-<h1>Instructions example</h1>
-
-<center>
-<p>It is possible either to wait for the 'Space' key to be pressed or to present instructions for a given time. Look for the documentation.</p>
-
-<p>Moreover, you can use the <em>img</em> tag to render images (that must be included into the 'includes/img' directory).</p>
-
-<p><img src=openmatb.png></p>
-
-<p>More details are provided on github. https://github.com/juliencegarra/OpenMATB</p>
+<p><img src="2023-03-13_OpenMATB_Instructions_3.png" width=1600 height=1100></p>
 </center>
